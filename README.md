@@ -1,36 +1,148 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js MSAL React + Microsoft Graph SPA Template
 
-## Getting Started
+A production-ready Next.js 16 App Router starter that demonstrates how to wire up Microsoft Entra ID authentication with the MSAL React SDK and call Microsoft Graph with modern React patterns (hooks, SWR caching, Fluent UI 9). Use it as a quickstart or template when you need a secure single-page application that signs users in, obtains delegated tokens, and renders organization/profile data immediately.
 
-First, run the development server:
+## Table of contents
+1. [Why this repo](#why-this-repo)
+2. [Feature highlights](#feature-highlights)
+3. [Prerequisites](#prerequisites)
+4. [Setup](#setup)
+5. [Available scripts](#available-scripts)
+6. [Project layout](#project-layout)
+7. [Authentication & Graph architecture](#authentication--graph-architecture)
+8. [Customization playbook](#customization-playbook)
+9. [Troubleshooting](#troubleshooting)
+10. [Helpful links](#helpful-links)
 
+## Why this repo
+- **Zero-config identity plumbing** – MSAL is pre-configured with redirect handling, active-account management, and silent SSO so you can focus on product work.
+- **Graph-ready data layer** – Typed hooks and a resilient fetcher abstract access tokens, pagination, and transient failures.
+- **Enterprise-grade UI shell** – Fluent UI navigation, responsive layout, loading states, and reusable error dialogs already wired up.
+- **SEO-friendly + deployable** – Static metadata, semantic headings, and clear instructions make it easy to publish as documentation for your organization.
+
+## Feature highlights
+- ✅ **Next.js 16 + React 19** App Router with client components where needed and a global provider stack in `app/layout.tsx`.
+- ✅ **MSAL React 5** wrapper (`quickstart/providers/msal/MsalClientProvider.tsx`) that initializes once, handles redirect promises, and keeps the active account in sync.
+- ✅ **Microsoft Graph helpers**
+  - `quickstart/providers/msgraph/msGraphFetcher.ts` injects access tokens, retries pagination via `@odata.nextLink`, and now adds exponential backoff + friendly throttling hints for 429/5xx responses.
+  - `quickstart/hooks/useGraphData.ts` wraps SWR for caching, revalidation, and typed responses.
+  - `quickstart/hooks/useScopes.ts` detects missing consent and triggers interactive flows.
+- ✅ **Fluent UI 9 design system** with a sticky app shell (`quickstart/ui/layouts/ClientShell.tsx`), adaptive nav (`quickstart/ui/navigation/NavMenu.tsx`), and sign-in/out controls fed by MSAL account data.
+- ✅ **Route protection baked in** – the `app/(authenticated)/layout.tsx` group wraps every protected page with `AuthenticatedClientShell`, which uses `MsalAuthenticationTemplate` to require sign-in (and display helpful loading/error states) even on deep links.
+- ✅ **Sample Graph pages**
+  - `app/(authenticated)/profile/page.tsx` renders `/me` data with incremental consent prompts.
+  - `app/(authenticated)/organization/page.tsx` calls `/organization` to show tenant metadata (requires `Organization.Read.All`).
+- ✅ **Utility components** such as the global `ErrorDialogProvider` and `LoadingScreen` keep UX consistent during auth flows.
+
+## Prerequisites
+- Node.js 18.18+ or 20+ (matches Next.js 16 requirements) and npm 9+.
+- A Microsoft Entra ID (Azure AD) tenant with permissions to create app registrations.
+- An account with permission to grant delegated Microsoft Graph scopes (User.Read, Organization.Read.All, etc.).
+
+## Setup
+
+### 1. Install dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Register an Entra ID application
+1. Visit [Azure Portal › Entra ID › App registrations](https://entra.microsoft.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps).
+2. **New registration** ➜ name it (e.g., `Next.js MSAL Graph SPA`).
+3. Supported account types: choose *Single tenant* (recommended for demos) or *Multi-tenant* depending on your scenario.
+4. Redirect URI (type *Single-page application*): `http://localhost:3000`.
+5. After creating the app:
+   - Copy the **Application (client) ID**.
+   - Under **Authentication**, add your production redirect URIs (e.g., `https://yourdomain.com`).
+   - Under **API permissions**, add delegated Microsoft Graph scopes:
+     | Permission | Reason |
+     |------------|--------|
+     | `User.Read` | Load profile data via `/me` |
+     | `Organization.Read.All` | Populate the Organization screen |
+     | Any extra scopes your solution needs | Add them now or later |
+   - Grant admin consent for the tenant (required for `Organization.Read.All`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Configure environment variables
+Duplicate `.env.example` as `.env.local` (or any `.env*.local`) and adjust values:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```ini
+NEXT_PUBLIC_APP_NAME="Next.js MSAL React SPA Quickstart"
+NEXT_PUBLIC_TENANT_ID="<directory (tenant) ID or 'common'>"
+NEXT_PUBLIC_CLIENT_ID="<application (client) ID>"
+NEXT_PUBLIC_MSAL_REDIRECT_URI="http://localhost:3000"
+NEXT_PUBLIC_MSAL_SCOPES="User.Read,Organization.Read.All"
+```
 
-## Learn More
+Notes:
+- The app now fails fast if `NEXT_PUBLIC_TENANT_ID`, `NEXT_PUBLIC_CLIENT_ID`, or `NEXT_PUBLIC_MSAL_SCOPES` are missing—restart `npm run dev` whenever you edit `.env.local` so Next.js reloads them.
+- All variables are read in `config/appConfig.ts` and consumed across MSAL + Graph helpers.
+- `NEXT_PUBLIC_MSAL_SCOPES` is a comma-separated list; align it with the permissions you granted. The profile page checks these scopes via `useScopes` before rendering data.
+- For multi-environment deployments, create `.env.development.local` / `.env.production.local` or workspace secrets.
 
-To learn more about Next.js, take a look at the following resources:
+### 4. Run the development server
+```bash
+npm run dev
+```
+Visit [http://localhost:3000](http://localhost:3000) and select **Sign in**. Once consented, explore **Profile** and **Organization** from the sidebar.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Available scripts
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Starts Next.js with hot reload and client-side MSAL initialization logs. |
+| `npm run build` | Production build (generates `.next/`). Useful for CI/CD validation. |
+| `npm run start` | Serves the production build; ensure env vars are set in your hosting platform. |
+| `npm run lint` | Runs ESLint (Next.js config) to catch common mistakes. |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project layout
+```
+app/
+├─ layout.tsx                 # Global providers + styles
+├─ page.tsx                   # Quickstart landing page
+└─ (authenticated)/           # Routes that require MSAL auth
+   ├─ profile/page.tsx        # /me sample
+   └─ organization/page.tsx   # /organization sample
+config/
+├─ appConfig.ts               # Reads NEXT_PUBLIC_* env vars
+└─ NavItems.tsx               # Sidebar + mobile nav definitions
+quickstart/
+├─ providers/msal/            # MSAL config, helpers, navigation client
+├─ providers/msgraph/         # Graph endpoints + fetcher utilities
+├─ hooks/                     # Reusable React hooks (Graph data, scopes)
+├─ ui/layouts/ClientShell.tsx # Fluent UI shell with navbar + sidebar
+├─ ui/navigation/             # Nav components & sign-in/out menu
+└─ ui/common/                 # Error dialog + loading spinner
+```
 
-## Deploy on Vercel
+## Authentication & Graph architecture
+1. **AppProviders** wraps the tree with `MsalClientProvider`, Fluent UI theme, and the `ErrorDialogProvider` so every route can surface failures.
+2. **MsalClientProvider** ensures `PublicClientApplication` initializes once per browser, handles `handleRedirectPromise`, sets the active account, and tries silent SSO if possible.
+3. **ClientShell** renders a toolbar (`NavBar`) + sidebar (`NavMenu`). `NavMenu` filters routes that require auth using `useIsAuthenticated` so anonymous users only see what they can access.
+4. **Sign-in/out buttons** reuse `handleSignIn` / `handleSignOut` (redirect flows) and display profile photos fetched from `/me/photos/48x48/$value` via SWR.
+5. **Graph calls**
+   - `useGraphData(resource)` → `msGraphFetcher` → fetch with `Authorization: Bearer <token>`.
+   - `msGraphFetcher` injects tokens, optional `ConsistencyLevel`, paginates automatically, and throws descriptive errors surfaced by cards/dialogs.
+6. **Consent flow**: `useScopes` checks delegated scopes silently, shows descriptive CTA cards, and can force consent when needed.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Customization playbook
+- **Rename the app**: change `NEXT_PUBLIC_APP_NAME` or override the fallback string in `config/appConfig.ts`.
+- **Add pages**: duplicate the pattern inside `app/(authenticated)/` and register new routes in `config/NavItems.tsx` with `requiresAuth` flags.
+- **Call additional Graph endpoints**: extend `msGraphEndpoints` and reuse `useGraphData` for SWR-powered UI updates.
+- **Handle errors centrally**: import `useErrorDialog()` anywhere inside the provider tree to show blocking issues (token failures, Graph throttling, etc.).
+- **Style it**: adjust Fluent UI tokens in `quickstart/styling/fluentui/styles.ts` or wrap `FluentProvider` with a custom theme.
+- **Charts & data viz**: Recharts 3 is already installed—perfect for rendering usage reports with Graph analytics data.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Troubleshooting
+- **"No active account found"** – Sign in first; `msalInstance` cannot fetch tokens without an account. This is thrown by `getMsGraphAccessToken`.
+- **`interaction_required` errors** – The user must consent to new scopes. The Profile page surfaces a "Grant profile access" card that calls `requestConsent()`.
+- **Organization screen empty** – Ensure an admin granted `Organization.Read.All`. Without it, Graph returns HTTP 403.
+- **Redirect URI mismatch** – Update the SPA redirect in Azure Portal to exactly match `NEXT_PUBLIC_MSAL_REDIRECT_URI` (including protocol + port).
+- **Layout scrolling feels stuck** – `ClientShell` uses custom scrollcontainers; ensure the element with `id="scroll-container"` exists if you refactor.
+
+## Helpful links
+- [MSAL React documentation](https://learn.microsoft.com/azure/active-directory/develop/tutorial-v2-react)
+- [Microsoft Graph delegated permissions](https://learn.microsoft.com/graph/permissions-reference)
+- [Fluent UI React Components](https://react.fluentui.dev/)
+- [Next.js deployment guide](https://nextjs.org/docs/app/building-your-application/deploying)
+
+---
+Need more? File an issue or open a discussion—feedback on the template is welcome!
