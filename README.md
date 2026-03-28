@@ -6,6 +6,14 @@ Visit [https://spa.identityworkbench.com/](https://spa.identityworkbench.com/) f
 
 [www.linkedin.com/in/chris-dymond](https://www.linkedin.com/in/chris-dymond)
 
+## Author’s Note
+
+This quickstart template is something I’ve wanted to build for quite some time.
+
+It brings together the patterns, lessons, and hard-won experience from my previous work with MSAL, React, and Microsoft Graph into a single, practical starting point. Rather than piecing together fragments from multiple docs and samples, the goal here is to provide a clean, working foundation that just makes sense.
+
+If this saves you time, removes some of the friction in getting set up, or helps you avoid a few of the common pitfalls, then it has done its job.
+
 ## Table of contents
 
 1. [Why this repo](#why-this-repo)
