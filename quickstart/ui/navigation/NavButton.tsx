@@ -60,8 +60,8 @@ export function NavButton({
 
   return (
     <Button
-      shape="square"
-      appearance="subtle"
+      shape='square'
+      appearance='subtle'
       onClick={() => router.push(route)}
       className={styles.button}
       style={buttonStyle}

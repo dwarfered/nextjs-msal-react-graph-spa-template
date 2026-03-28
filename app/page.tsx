@@ -66,19 +66,14 @@ export default function Home() {
         <Title1>Next.js + MSAL React + Microsoft Graph quickstart</Title1>
         <br />
         <Body1 style={{ marginTop: tokens.spacingVerticalS }}>
-          Ship a multi-tenant Fluent UI dashboard that authenticates against
-          Microsoft Entra ID, calls Microsoft Graph with resilient SWR hooks,
-          and showcases real user + organization data out of the box.
+          Easily build a single or multi-tenant Next.js React SPA that
+          authenticates against Microsoft Entra ID, calls Microsoft Graph with
+          resilient SWR hooks, and showcases real user + organization data out
+          of the box.
         </Body1>
         <div className={styles.heroActions}>
           <Button appearance='primary' onClick={() => router.push('/profile')}>
             View Graph profile sample
-          </Button>
-          <Button
-            appearance='secondary'
-            onClick={() => router.push('/organization')}
-          >
-            View organization sample
           </Button>
           <Button
             as='a'

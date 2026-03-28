@@ -4,7 +4,10 @@ const DEFAULT_REDIRECT_URI = 'http://localhost:3000';
 
 const requireEnv = (
   value: string | undefined,
-  name: 'NEXT_PUBLIC_TENANT_ID' | 'NEXT_PUBLIC_CLIENT_ID' | 'NEXT_PUBLIC_MSAL_SCOPES',
+  name:
+    | 'NEXT_PUBLIC_TENANT_ID'
+    | 'NEXT_PUBLIC_CLIENT_ID'
+    | 'NEXT_PUBLIC_MSAL_SCOPES',
 ) => {
   const trimmed = value?.trim();
 
@@ -17,8 +20,14 @@ const requireEnv = (
   return trimmed;
 };
 
-const TENANT_ID = requireEnv(process.env.NEXT_PUBLIC_TENANT_ID, 'NEXT_PUBLIC_TENANT_ID');
-const CLIENT_ID = requireEnv(process.env.NEXT_PUBLIC_CLIENT_ID, 'NEXT_PUBLIC_CLIENT_ID');
+const TENANT_ID = requireEnv(
+  process.env.NEXT_PUBLIC_TENANT_ID,
+  'NEXT_PUBLIC_TENANT_ID',
+);
+const CLIENT_ID = requireEnv(
+  process.env.NEXT_PUBLIC_CLIENT_ID,
+  'NEXT_PUBLIC_CLIENT_ID',
+);
 
 const parsedScopes = requireEnv(
   process.env.NEXT_PUBLIC_MSAL_SCOPES,
