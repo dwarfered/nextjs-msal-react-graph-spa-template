@@ -4,6 +4,8 @@ A production-ready Next.js 16 App Router starter that demonstrates how to wire u
 
 Visit [https://spa.identityworkbench.com/](https://spa.identityworkbench.com/) for a live demo.
 
+[www.linkedin.com/in/chris-dymond](https://www.linkedin.com/in/chris-dymond)
+
 ## Table of contents
 
 1. [Why this repo](#why-this-repo)
