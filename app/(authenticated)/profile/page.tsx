@@ -45,9 +45,11 @@ export default function ProfilePage() {
     );
   }
 
+  const cardStyle = { maxWidth: '720px' };
+
   if (hasScopes === false) {
     return (
-      <Card appearance='outline'>
+      <Card appearance='outline' style={cardStyle}>
         <CardHeader
           header={<Title3>Grant profile access</Title3>}
           description='Consent to the scopes configured for this quickstart to view your profile.'
@@ -61,7 +63,7 @@ export default function ProfilePage() {
 
   if (error) {
     return (
-      <Card appearance='outline'>
+      <Card appearance='outline' style={cardStyle}>
         <CardHeader
           header={<Title3>Unable to load profile</Title3>}
           description='Check the Graph scopes or try signing out and back in.'
@@ -81,7 +83,7 @@ export default function ProfilePage() {
       : 'Not provided';
 
   return (
-    <Card>
+    <Card style={cardStyle}>
       <CardHeader
         header={<Title3>{data.displayName ?? 'Unknown user'}</Title3>}
         description={data.jobTitle ?? 'No job title on file'}

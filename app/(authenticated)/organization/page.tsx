@@ -39,9 +39,11 @@ export default function OrganizationPage() {
     );
   }
 
+  const cardStyle = { maxWidth: '720px' };
+
   if (error) {
     return (
-      <Card appearance='outline'>
+      <Card appearance='outline' style={cardStyle}>
         <CardHeader
           header={<Title3>Unable to load organization</Title3>}
           description='Confirm the signed-in account has the Organization.Read.All permission.'
@@ -53,7 +55,7 @@ export default function OrganizationPage() {
 
   if (!data || !data.value || data.value.length === 0) {
     return (
-      <Card appearance='outline'>
+      <Card appearance='outline' style={cardStyle}>
         <CardHeader
           header={<Title3>No organization metadata returned</Title3>}
           description='Try signing in with a tenant administrator.'
@@ -65,7 +67,7 @@ export default function OrganizationPage() {
   const organization = data.value[0];
 
   return (
-    <Card>
+    <Card style={cardStyle}>
       <CardHeader
         header={<Title3>{organization.displayName}</Title3>}
         description={`Tenant ID: ${organization.id}`}
