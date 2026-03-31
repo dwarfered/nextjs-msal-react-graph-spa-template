@@ -3,6 +3,7 @@
 import {
   Body1,
   Body1Strong,
+  Button,
   Card,
   CardHeader,
   Caption1,
@@ -11,6 +12,8 @@ import {
 } from '@fluentui/react-components';
 import { useGraphData } from '@/quickstart/hooks/useGraphData';
 import { msGraphEndpoints } from '@/quickstart/providers/msgraph/msGraphEndpoints';
+import { InteractionRequiredAuthError } from '@azure/msal-browser';
+import { handleSignIn } from '@/quickstart/providers/msal/msalUtilities';
 
 type OrganizationResponse = {
   value: Array<{
@@ -45,10 +48,25 @@ export default function OrganizationPage() {
     return (
       <Card appearance='outline' style={cardStyle}>
         <CardHeader
-          header={<Title3>Unable to load organization</Title3>}
-          description='Confirm the signed-in account has the Organization.Read.All permission.'
+          header={
+            error instanceof InteractionRequiredAuthError
+              ? 'Session expired'
+              : 'Unable to load organization'
+          }
+          description={
+            error instanceof InteractionRequiredAuthError
+              ? 'Sign back in so we can acquire an Organization.Read.All token.'
+              : 'Confirm the signed-in account has the Organization.Read.All permission.'
+          }
         />
-        <Body1>{error instanceof Error ? error.message : String(error)}</Body1>
+        <Body1 style={{ marginBottom: 16 }}>
+          {error instanceof Error ? error.message : String(error)}
+        </Body1>
+        {error instanceof InteractionRequiredAuthError ? (
+          <Button appearance='primary' onClick={() => handleSignIn()}>
+            Sign in again
+          </Button>
+        ) : null}
       </Card>
     );
   }

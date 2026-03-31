@@ -1,8 +1,4 @@
-import {
-  getMsGraphAccessToken,
-  NoActiveAccountError,
-} from './msGraphUtilities';
-import { handleSignOut } from '../msal/msalUtilities';
+import { getMsGraphAccessToken } from './msGraphUtilities';
 
 export type MsGraphFetcherOptions = {
   consistencyLevel?: 'eventual';
@@ -26,10 +22,6 @@ export async function msGraphFetcher(
   try {
     accessToken = await getMsGraphAccessToken();
   } catch (error) {
-    // Only force a logout when silent token acquisition actually failed.
-    if (!(error instanceof NoActiveAccountError)) {
-      handleSignOut();
-    }
     throw error;
   }
 

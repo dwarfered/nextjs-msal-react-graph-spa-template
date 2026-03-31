@@ -13,6 +13,8 @@ import { appConfig } from '@/config/appConfig';
 import { useScopes } from '@/quickstart/hooks/useScopes';
 import { useGraphData } from '@/quickstart/hooks/useGraphData';
 import { msGraphEndpoints } from '@/quickstart/providers/msgraph/msGraphEndpoints';
+import { InteractionRequiredAuthError } from '@azure/msal-browser';
+import { handleSignIn } from '@/quickstart/providers/msal/msalUtilities';
 
 type GraphMeResponse = {
   displayName?: string;
@@ -65,10 +67,25 @@ export default function ProfilePage() {
     return (
       <Card appearance='outline' style={cardStyle}>
         <CardHeader
-          header={<Title3>Unable to load profile</Title3>}
-          description='Check the Graph scopes or try signing out and back in.'
+          header={
+            error instanceof InteractionRequiredAuthError
+              ? 'Session expired'
+              : 'Unable to load profile'
+          }
+          description={
+            error instanceof InteractionRequiredAuthError
+              ? 'We need you to sign in again so we can acquire a fresh Microsoft Graph token.'
+              : 'Check the Graph scopes or try signing out and back in.'
+          }
         />
-        <Body1>{error instanceof Error ? error.message : String(error)}</Body1>
+        <Body1 style={{ marginBottom: 16 }}>
+          {error instanceof Error ? error.message : String(error)}
+        </Body1>
+        {error instanceof InteractionRequiredAuthError ? (
+          <Button appearance='primary' onClick={() => handleSignIn()}>
+            Sign in again
+          </Button>
+        ) : null}
       </Card>
     );
   }
