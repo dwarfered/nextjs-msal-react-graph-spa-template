@@ -1,18 +1,37 @@
-# Next.js MSAL React + Microsoft Graph SPA Template
+# Next.js MSAL React SPA Template (Microsoft Entra ID + Microsoft Graph)
 
-A production-ready Next.js 16 App Router starter that demonstrates how to wire up Microsoft Entra ID authentication with the MSAL React SDK and call Microsoft Graph with modern React patterns (hooks, SWR caching, Fluent UI 9). Use it as a quickstart or template when you need a secure single-page application that signs users in, obtains delegated tokens, and renders Microsoft Graph data immediately.
+> A production-ready Next.js SPA template for Microsoft Entra ID authentication (MSAL React) and Microsoft Graph.
 
-Visit [https://spa.identityworkbench.com/](https://spa.identityworkbench.com/) for a live demo.
+**Live demo:** https://spa.identityworkbench.com/  
+**Built for:** real-world identity-enabled applications, not just samples
+
+It provides a clean, working foundation to sign users in, acquire delegated tokens, and immediately start rendering Microsoft Graph data using modern React patterns (hooks, SWR, Fluent UI).
+
+Built to reflect how identity-enabled applications are actually implemented, not just how they are documented.
+
+⭐ If this helps you, consider starring the repo
+
+## Live Demo
+
+[https://spa.identityworkbench.com/](https://spa.identityworkbench.com/)
+
+## Author
 
 [www.linkedin.com/in/chris-dymond](https://www.linkedin.com/in/chris-dymond)
 
 ## Author’s Note
 
-This quickstart template is something I’ve wanted to build for quite some time.
+This template brings together patterns, lessons, and real-world experience working with MSAL, React, and Microsoft Graph into a single, practical starting point.
 
-It brings together the patterns, lessons, and hard-won experience from my previous work with MSAL, React, and Microsoft Graph into a single, practical starting point. Rather than piecing together fragments from multiple docs and samples, the goal here is to provide a clean, working foundation that just makes sense.
+Instead of piecing together multiple samples and docs, the goal is to provide a clean foundation that just works.
 
-If this saves you time, removes some of the friction in getting set up, or helps you avoid a few of the common pitfalls, then it has done its job.
+If it saves you time or helps you avoid common pitfalls, it’s done its job.
+
+## Who this is for
+
+- Engineers building Microsoft Entra ID-integrated SPAs
+- Teams needing a quickstart for MSAL React + Microsoft Graph
+- Anyone tired of stitching together multiple identity samples
 
 ## Table of contents
 
@@ -29,9 +48,9 @@ If this saves you time, removes some of the friction in getting set up, or helps
 
 ## Why this repo
 
-- **Zero-config identity plumbing** – MSAL is pre-configured with redirect handling, active-account management, and silent SSO so you can focus on product work.
-- **Graph-ready data layer** – Typed hooks and a resilient fetcher abstract access tokens, pagination, and transient failures.
-- **Enterprise-grade UI shell** – Fluent UI navigation, responsive layout, loading states, and reusable error dialogs already wired up.
+- **Pre-configured identity plumbing** – MSAL is pre-configured with redirect handling, active-account management, and silent SSO so you can focus on product work.
+- **Graph-ready data layer with typed hooks and resilient fetching** – Typed hooks and a resilient fetcher abstract access tokens, pagination, and transient failures.
+- **Fluent UI-based application shell** – Fluent UI navigation, responsive layout, loading states, and reusable error dialogs already wired up.
 
 ## Feature highlights
 
