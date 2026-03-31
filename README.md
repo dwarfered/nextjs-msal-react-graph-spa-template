@@ -1,6 +1,6 @@
 # Next.js MSAL React SPA Template (Microsoft Entra ID + Microsoft Graph)
 
-> A production-ready Next.js SPA template for Microsoft Entra ID authentication (MSAL React) and Microsoft Graph.
+> A production-ready Next.js React SPA template for Microsoft Entra ID authentication using MSAL and Microsoft Graph.
 
 **Live demo:** https://spa.identityworkbench.com/  
 **Built for:** real-world identity-enabled applications, not just samples
@@ -37,6 +37,19 @@ This template brings together patterns, lessons, and real-world experience worki
 Instead of piecing together multiple samples and docs, the goal is to provide a clean foundation that just works.
 
 If it saves you time or helps you avoid common pitfalls, it’s done its job.
+
+## ⚠️ Security Notice
+
+This is a browser-based SPA. Anything shipped to the client should be treated as public.
+
+Do not include:
+- Secrets (client secrets, API keys, certificates)
+- Sensitive logic or decision-making
+- Server-side enforcement of access controls
+
+This template uses MSAL with Microsoft Entra ID (Authorization Code Flow with PKCE), which is appropriate for public clients.
+
+If your application requires sensitive or security-critical operations, these should be handled by a backend or API layer where access control and enforcement can be trusted.
 
 ## Who this is for
 
