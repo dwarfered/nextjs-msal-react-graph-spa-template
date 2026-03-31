@@ -9,7 +9,18 @@ It provides a clean, working foundation to sign users in, acquire delegated toke
 
 Built to reflect how identity-enabled applications are actually implemented, not just how they are documented.
 
-⭐ If this helps you, consider starring the repo
+[![Next.js](https://img.shields.io/badge/Next.js-App%20Router-blue)](https://github.com/vercel/next.js)
+[![Auth](https://img.shields.io/badge/Auth-MS%20Entra%20ID%20(MSAL)-blueviolet)](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-react)
+[![Microsoft Graph](https://img.shields.io/badge/API-Microsoft%20Graph-blue)](https://github.com/microsoftgraph/msgraph-sdk-javascript)
+[![Fluent UI](https://img.shields.io/badge/UI-Fluent%20UI-ff69b4)](https://github.com/microsoft/fluentui)
+[![License](https://img.shields.io/github/license/dwarfered/nextjs-msal-react-graph-spa-template)](...)
+[![Last Commit](https://img.shields.io/github/last-commit/dwarfered/nextjs-msal-react-graph-spa-template)](...)
+
+## ⭐ Support
+
+If this project saves you time or helps you get started faster, consider giving it a star.
+
+[![GitHub stars](https://img.shields.io/github/stars/dwarfered/nextjs-msal-react-graph-spa-template.svg?style=social)](https://github.com/dwarfered/nextjs-msal-react-graph-spa-template/stargazers)
 
 ## Live Demo
 
