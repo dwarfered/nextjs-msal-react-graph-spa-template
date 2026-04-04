@@ -17,7 +17,7 @@ Built to reflect how identity-enabled applications are actually implemented, not
 [![Last Commit](https://img.shields.io/github/last-commit/dwarfered/nextjs-msal-react-graph-spa-template)](https://github.com/dwarfered/nextjs-msal-react-graph-spa-template/commits/main)
 
 <p align="center">
-  <img src="./public/docs/spa-pkce.png" alt="Insights dashboard" width="800" />
+  <img src="./public/docs/spa-pkce.png" alt="Authorization Flow with PKCE" width="800" />
 </p>
 
 ## ⭐ Support
