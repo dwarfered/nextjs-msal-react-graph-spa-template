@@ -1,68 +1,62 @@
 import {
-  BrowserAuthError,
-  InteractionRequiredAuthError,
+  AccountInfo,
+  AuthenticationResult,
+  NavigationClient,
 } from '@azure/msal-browser';
-import {
-  ensureMsalInitialized,
-  loginRequest,
-  msalInstance,
-} from '../msal/msalAuthConfig';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import { loginRequest, msalInstance } from './msalAuthConfig';
 
-export class NoActiveAccountError extends Error {
-  constructor() {
-    super('No active account found.');
-    this.name = 'NoActiveAccountError';
+export class CustomNavigationClient extends NavigationClient {
+  private router: AppRouterInstance;
+
+  constructor(router: AppRouterInstance) {
+    super();
+    this.router = router;
+  }
+
+  async navigateInternal(url: string, options: { noHistory?: boolean }) {
+    const relativePath = url.replace(window.location.origin, '');
+    if (options.noHistory) {
+      this.router.replace(relativePath);
+    } else {
+      this.router.push(relativePath);
+    }
+    return false;
   }
 }
 
-export async function getMsGraphAccessToken(): Promise<string> {
-  // Ensure MSAL is fully initialized before using any API on the instance
-  await ensureMsalInitialized();
+export function handleSignIn() {
+  msalInstance.loginRedirect(loginRequest).catch((e: unknown) => {
+    console.error(`loginRedirect failed: ${e}`);
+  });
+}
 
-  let account = msalInstance.getActiveAccount();
+export function handleSignOut() {
+  msalInstance.logoutRedirect(loginRequest).catch((e: unknown) => {
+    console.error(`loginRedirect failed: ${e}`);
+  });
+}
 
+// Checks if the current users' access token contains a required scope.
+// Used for incremental scope checks (does user have Sites.Read.All etc) or another perm a page may require.
+export const hasScopes = async (
+  requiredScopes: string[],
+  account: AccountInfo | null,
+): Promise<boolean> => {
   if (!account) {
-    const accounts = msalInstance.getAllAccounts();
-    if (accounts.length > 0) {
-      account = accounts[0];
-      msalInstance.setActiveAccount(account);
-    } else {
-      throw new NoActiveAccountError();
-    }
+    return false;
   }
 
   try {
-    const response = await msalInstance.acquireTokenSilent({
-      ...loginRequest,
-      account,
-    });
-    return response.accessToken;
-  } catch (error: unknown) {
-    const errorCode =
-      typeof error === 'object' && error && 'errorCode' in error
-        ? String((error as { errorCode?: string }).errorCode ?? '')
-        : '';
-    const shouldForceInteractive =
-      error instanceof InteractionRequiredAuthError ||
-      (error instanceof BrowserAuthError &&
-        [
-          'block_iframe_reload',
-          'token_renewal_timeout',
-          'monitor_window_timeout',
-        ].includes(errorCode)) ||
-      ['block_iframe_reload', 'timed_out', 'token_renewal_timeout'].includes(
-        errorCode,
-      );
+    const response: AuthenticationResult =
+      await msalInstance.acquireTokenSilent({
+        account,
+        scopes: requiredScopes,
+      });
 
-    if (shouldForceInteractive) {
-      console.warn(
-        'MSAL: Silent token acquisition failed, redirecting to sign in',
-        error,
-      );
-      msalInstance.loginRedirect(loginRequest);
-    } else if (process.env.NODE_ENV === 'development') {
-      console.error('MSAL: Silent token acquisition failed', error);
-    }
-    throw error;
+    const tokenScopes = response.scopes || [];
+    return requiredScopes.every((scope) => tokenScopes.includes(scope));
+  } catch {
+    return false;
   }
-}
+};
