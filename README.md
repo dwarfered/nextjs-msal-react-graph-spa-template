@@ -5,9 +5,14 @@
 **Live demo:** https://spa.identityworkbench.com/  
 **Built for:** real-world identity-enabled applications, not just samples
 
-It provides a clean, working foundation to sign users in, acquire delegated tokens, and immediately start rendering Microsoft Graph data using modern React patterns (hooks, SWR, Fluent UI).
+This template provides a clean, working foundation to:
 
-Built to reflect how identity-enabled applications are actually implemented, not just how they are documented.
+- Sign users in with Microsoft Entra ID  
+- Acquire delegated access tokens using MSAL  
+- Query and render Microsoft Graph data  
+- Build responsive UI using modern React patterns (hooks, SWR, Fluent UI)
+
+It reflects how identity-enabled applications are actually built in practice - not just how they are documented.
 
 [![Next.js](https://img.shields.io/badge/Next.js-App%20Router-blue)](https://github.com/vercel/next.js)
 [![Auth](<https://img.shields.io/badge/Auth-MS%20Entra%20ID%20(MSAL)-blueviolet>)](https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-react)
